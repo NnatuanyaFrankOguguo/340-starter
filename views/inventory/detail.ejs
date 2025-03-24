@@ -1,0 +1,14 @@
+<!-- Content Heading -->
+<!-- Content Heading -->
+<% if (title) { %>
+    <h1><%= title %></h1>
+<% } %>
+
+<!-- Display error message if any -->
+<% if (message) { %>
+    <p class="error"><%= message %></p>
+<% } %>
+
+<!-- Cars Section -->
+<%- grid %>
+<!-- End of Cars Section -->
