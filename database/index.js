@@ -38,6 +38,7 @@ module.exports = {
 } else {
     pool = new Pool({
         connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false }, // ✅ Enforce SSL in production
     })
     module.exports = pool;
 }
