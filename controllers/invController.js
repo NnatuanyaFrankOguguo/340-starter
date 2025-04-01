@@ -19,7 +19,6 @@ invCont.buildByClassificationId = async (req, res, next) => {
         });
     }
 
-
     const grid = await utilities.buildClassificationGrid(data)
     let nav = await utilities.getNav()
     const className = data[0].classification_name
@@ -57,6 +56,99 @@ invCont.buildCarDetail = async (req, res, next) => {
         message: "", // placeholder for future use
     })
 
+}
+
+/* ***************************
+ *  Build management by make view
+ * ************************** */
+
+invCont.managementView = async (req, res) => {
+    res.render("./inventory/management", {
+        title: "Vehicle Management",
+        nav: await utilities.getNav(),
+        messages: req.flash() // Pass all flash messages
+    })
+}
+
+// Display add-classification form
+invCont.getAddClassificationView = async (req, res) => {
+    let nav = await utilities.getNav()
+    res.render("./inventory/add-classification", {
+        title: "Add new classification",
+        nav,
+        errors: null,
+        messages: req.flash() // Pass all flash messages, 
+        
+    })
+}
+
+
+// Handle classification form submission
+invCont.addClassification = async (req, res) => {
+    const { classification_name } = req.body
+    try {
+        const addClass = await invModel.addClassification(classification_name)
+        if (addClass) {
+            req.flash("success", "Classification added successfully");
+            res.render("./inventory/management", {
+                title: "Vehicle Management",
+                nav: await utilities.getNav(),
+                messages: req.flash() // Pass all flash messages
+            });
+
+        }
+    } catch (error) {
+        req.flash("error", "new classification added failed. Please try again.") 
+        return res.status(501).render("./inventory/add-classification", { 
+            title: "Add new classification",
+            nav,
+            errors: error.errors,
+            messages: req.flash() // Pass all flash messages
+        });
+    }
+
+
+}
+
+// Display add-inventory form
+invCont.getAddInventoryView = async (req, res) => {
+    let nav = await utilities.getNav()
+    let classificationList = await utilities.buildClassificationList();
+    res.render("./inventory/add-inventory", {
+        title: "Add new inventory",
+        nav,
+        classificationList,
+        errors: null,
+        messages:  req.flash() // Pass all flash messages,,
+        
+    })
+}
+
+invCont.getAddInventory = async (req, res) => {
+    const {inv_make, inv_model, inv_year, inv_description, inv_price, inv_miles, inv_color, inv_image, inv_thumbnail, classification_id} = req.body;
+    console.log(req.body)
+    try {
+        const addResult = await invModel.addInventory(
+            inv_make, inv_model, String(inv_year), inv_description, parseInt(inv_price), parseInt(inv_miles), inv_color, inv_image, inv_thumbnail, parseInt(classification_id)
+        )
+        if (addResult) {
+            req.flash("success", "Inventory added successfully");
+            res.render("./inventory/management", {
+                title: "Vehicle Management",
+                nav: await utilities.getNav(),
+                messages: req.flash()
+            });
+        }
+       
+    } catch (error) {
+        req.flash("error", "new inventory added failed. Please try again.");
+        return res.status(501).render("./inventory/add-inventory", { 
+            title: "Add new inventory",
+            nav,
+            errors: [{ msg: error.message }],
+            messages: req.flash() // Pass all flash messages
+        });
+    }
 }
 
 

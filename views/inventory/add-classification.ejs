@@ -1,0 +1,33 @@
+<% if (title) { %>
+    <h1><%= title %></h1>
+<% } %>
+
+<!-- Display flash messages, if any (success or error) -->
+<% if (messages && messages.success && messages.success.length) { %>
+    <div class="flash-message success"><%= messages.success %></div>
+  <% } %>
+  
+  <% if (messages && messages.error && messages.error.length) { %>
+    <div class="flash-message error"><%= messages.error %></div>
+  <% } %>
+
+<!-- Display server-side validation errors, if any -->
+<% if (errors) { %>
+    <ul class="notice">
+   <% errors.array().forEach(error => { %>
+     <li><%= error.msg %></li>
+  <%  }) %>
+   </ul>
+  <% } %>
+
+<div class="login-container">
+    <form action="/inv/add-classification" method="POST">
+        
+        <label for="classification_name">Classification Name:</label>
+        <input type="text" id="classification_name" name="classification_name" required  pattern="^[a-zA-Z0-9]+$" 
+        title="No spaces or special characters allowed. Only alphanumeric characters are allowed.">
+        <p class="note">No spaces or special characters allowed.</p>
+        <button type="submit">Add Classification</button>
+        
+    </form>
+</div>

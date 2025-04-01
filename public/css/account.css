@@ -1,0 +1,119 @@
+/* Responsive Login Container */
+.login-container {
+    font-family: 'Poppins', sans-serif;
+    background: rgba(186, 24, 24, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;  /* Keeps it from getting too wide */
+    animation: fadeIn 0.6s ease-in-out;
+    margin: 10% auto;  /* Centers it on all screen sizes */
+}
+/* Heading */
+.login-container h2 {
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: bold;
+    margin: 0.5rem 0 0.2rem;
+}
+
+input, select {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+/* Button Styling */
+button {
+    margin-top: 1rem;
+    padding: 10px;
+    background: #ff6f61;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: #ff3b30;
+}
+
+/* Error Messages */
+.error-messages {
+    background: rgba(255, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 8px;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 500px) {
+    .login-container {
+        width: 95%;
+    }
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Make it more compact on smaller screens */
+@media screen and (max-width: 600px) {
+    .login-container {
+        width: 95%; /* Slightly more width for small screens */
+        padding: 1.5rem;
+    }
+}
+
+/* Adjust for very small devices */
+@media screen and (max-width: 400px) {
+    .login-container {
+        width: 100%; 
+        padding: 1rem;
+    }
+}
+
+.password-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    flex: 1;
+}
+
+
+.password-wrapper button {
+    background: none;
+    border: none;
+    background-color: black;
+    text-align: center;
+    cursor: pointer;
+    font-size: 18px;
+}

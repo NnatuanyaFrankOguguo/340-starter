@@ -1,0 +1,20 @@
+
+
+<% if (title) { %>
+    <h1><%= title %></h1>
+<% } %>
+
+<!-- Display error message if any -->
+<% if (messages && messages.success && messages.success.length) { %>
+    <div class="flash-message success"><%= messages.success %></div>
+  <% } %>
+  
+  <% if (messages && messages.error && messages.error.length) { %>
+    <div class="flash-message error"><%= messages.error %></div>
+  <% } %>
+
+<ul>
+   <li><a href="/inv/add-classification">Add New Classification</a></li>
+  <li><a href="/inv/add-inventory">Add New Inventory</a></li>
+</ul>
+
