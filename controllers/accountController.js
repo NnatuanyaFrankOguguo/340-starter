@@ -52,7 +52,6 @@ const registerAccount = async (req, res) => {
             account_email,
             account_password
         );
-        console.log("Database Insert Result:", regResult);
 
         if (regResult) {
             req.flash("notice", `${account_firstname}, you are registered successfully. Please log in.`);

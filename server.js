@@ -45,6 +45,8 @@ app.use(session({
   name: 'sessionId'
 }))
 
+console.log("SESSION_SECRET:", process.env.SESSION_SECRET);
+
 
 // Express Messages Middleware
 app.use(require('connect-flash')());
