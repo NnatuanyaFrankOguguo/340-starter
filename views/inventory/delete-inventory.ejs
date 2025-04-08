@@ -1,0 +1,65 @@
+<link rel="stylesheet" href="../../css/account.css" media="screen">
+
+<% if (title) { %>
+    <h1><%= title %></h1>
+<% } %>
+
+
+<!-- Display flash messages, if any (success or error) -->
+<% if (messages && messages.success && messages.success.length) { %>
+  <div class="flash-message success"><%= messages.success %></div>
+<% } %>
+
+<% if (messages && messages.error && messages.error.length) { %>
+  <div class="flash-message error"><%= messages.error %></div>
+<% } %>
+
+<!-- Display server-side validation errors, if any -->
+<% if (errors) { %>
+  <ul class="notice">
+ <% errors.array().forEach(error => { %>
+   <li><%= error.msg %></li>
+<%  }) %>
+ </ul>
+<% } %>
+
+<div class="login-container">
+  <form action="/inv/delete" method="POST">
+      <label for="inv_make">Make</label>
+      <input type="text" name="inv_make" id="inv_make"  value="<%= inv_make %>"  required  disabled>
+      
+      <label for="inv_model">Model</label>
+      <input type="text" name="inv_model" id="inv_model"  value="<%= inv_model %>" required  disabled>
+      
+      <label for="inv_year">Year</label>
+      <input type="number" name="inv_year" id="inv_year"  value="<%= inv_year %>" required  disabled>
+
+      <label for="inv_description">Description</label>
+      <textarea name="inv_description" id="inv_description" required  disabled><%= inv_description %></textarea>
+      
+      <label for="inv_price">Price</label>
+      <input type="number" name="inv_price" id="inv_price" required  value="<%= inv_price %>"  disabled>
+
+      <label for="inv_image">Image URL:</label>
+      <input type="text" id="inv_image" name="inv_image" required
+      value="<%= inv_image %>"  disabled>
+
+      <label for="inv_thumbnail">Thumbnail URL:</label>
+      <input type="text" id="inv_thumbnail" name="inv_thumbnail" required
+      value="<%= inv_thumbnail %>"  disabled>
+      
+      <label for="inv_miles">Miles</label>
+      <input type="number" name="inv_miles" id="inv_miles"  value="<%= inv_miles %>" required  disabled>
+      
+      <label for="inv_color">Color</label>
+      <input type="text" name="inv_color" id="inv_color"  value="<%= inv_color %>" required  disabled>
+      
+      <button type="submit">Delete vehicle</button>
+
+      <input type="hidden" name="inv_id"
+        <% if(locals.inv_id) { %> value="<%= locals.inv_id %>"
+        <% } %>>
+  </form>
+</div>
+
+

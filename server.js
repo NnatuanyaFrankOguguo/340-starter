@@ -15,6 +15,7 @@ const inventoryRoute = require("./routes/inventoryRoutes")
 const accountRoute = require("./routes/accountRoutes")
 const utilities = require("./utilities/")
 const bodyParser = require("body-parser")
+const cookieParser = require("cookie-parser")
 
 const session = require("express-session")
 const pool = require('./database')
@@ -40,7 +41,7 @@ app.use(session({
     pool,
   }),
   secret: process.env.SESSION_SECRET,
-  resave: true,
+  resave: false,
   saveUninitialized: true,
   name: 'sessionId'
 }))
@@ -52,6 +53,8 @@ app.use(function(req, res, next){
   res.locals.messages = require('express-messages')(req, res)
   next()
 })
+
+app.use(cookieParser())
 
 
 /* ***********************
@@ -81,6 +84,10 @@ app.use('/account', accountRoute)
 app.use(async (req, res, next) => {
   next({status: 404, message: 'Sorry, we appear to have lost that page.'})
 })
+
+// JWT MIDDLEWARE 
+app.use(utilities.checkJWTToken)
+
 
 
 /* ***********************

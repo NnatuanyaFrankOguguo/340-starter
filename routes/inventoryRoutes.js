@@ -17,15 +17,26 @@ router.get('/trigger-error', (req, res, next) => {
 })
 
 // Task 1: Management View
-router.get('/', utilities.handleErrors(invController.managementView));
+router.get('/', utilities.authoriseEmployeeOrAdmin, utilities.handleErrors(invController.managementView));
 
 // Task 2: Add Classification
-router.get('/add-classification', utilities.handleErrors(invController.getAddClassificationView));
+router.get('/add-classification',  utilities.authoriseEmployeeOrAdmin, utilities.handleErrors(invController.getAddClassificationView));
 router.post('/add-classification', invValidate.classificationRules(), invValidate.checkClassificationData, utilities.handleErrors(invController.addClassification));
 
 // Task 3: Add Inventory
-router.get('/add-inventory',  utilities.handleErrors(invController.getAddInventoryView));
+router.get('/add-inventory',  utilities.authoriseEmployeeOrAdmin,  utilities.handleErrors(invController.getAddInventoryView));
 router.post('/add-inventory', invValidate.inventoryRules(), invValidate.checkInvData, utilities.handleErrors(invController.getAddInventory));
+
+// Task 4: Edit Inventory   
+router.get('/getInventory/:classification_id', utilities.handleErrors(invController.getInventoryJSON));
+
+// Route to edit inventory item
+router.get('/edit/:inv_id', utilities.authoriseEmployeeOrAdmin, utilities.handleErrors(invController.getEditInventoryView));
+router.get('/delete/:inv_id', utilities.authoriseEmployeeOrAdmin,  utilities.handleErrors(invController.deleteInventoryView));
+
+
+router.post('/update/', invValidate.inventoryRules(), invValidate.checkInvUpdateData, utilities.handleErrors(invController.updateInventory));
+router.post('/delete/', utilities.handleErrors(invController.deleteInventory));
 
 
 module.exports = router;

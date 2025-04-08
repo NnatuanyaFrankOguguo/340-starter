@@ -1,0 +1,34 @@
+<% if (title) { %>
+    <h1><%= title %></h1>
+<% } %>
+
+
+<% if (messages && messages.success && messages.success.length) { %>
+  <div class="flash-message success"><%= messages.success %></div>
+<% } %>
+
+<% if (messages && messages.error && messages.error.length) { %>
+  <div class="flash-message error"><%= messages.error %></div>
+<% } %>
+
+
+<% if (errors) { %>
+  <ul class="notice">
+ <% errors.array().forEach(error => { %>
+   <li><%= error.msg %></li>
+<%  }) %>
+ </ul>
+<% } %>
+
+
+<% if (welcome) { %>
+  <h3><%= welcome %></h3>
+<% } %>
+
+<p>You are Logged in</p>
+
+<% if (user.account_type === 'Employee' || user.account_type === 'Admin') { %>
+  <a href="/account/update/<%= user.account_id %>">Update Account Info</a>
+<% } %>
+
+

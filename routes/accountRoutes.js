@@ -10,10 +10,25 @@ router.get('/login', utilities.handleErrors(acctController.buildLogin))
 
 router.get('/register', utilities.handleErrors(acctController.buildRegister))
 
+router.get('/update/:id', utilities.handleErrors(acctController.buildUpdateAcctView))
+
 // Route to process login/registration form
 
-router.post('/login', utilities.handleErrors(acctController.processLogin))
+router.post('/login', regValidate.loginRules(), regValidate.checkLoginData, utilities.handleErrors(acctController.processLogin))
 
 router.post('/register', regValidate.registrationRules(), regValidate.checkRegData, utilities.handleErrors(acctController.registerAccount))
+
+router.get('/', utilities.checkLogin, utilities.handleErrors(acctController.buildAccountView));
+
+router.post("/update", regValidate.editAcctRules(), regValidate.checkEditAcctData, utilities.handleErrors(acctController.updateAccount))
+
+router.post('/update-password', regValidate.checkPasswordRules(), regValidate.checkPasswordData, utilities.handleErrors(acctController.updatePassword))
+
+router.get('/logout', (req, res) => {
+    res.clearCookie('jwt')
+    res.redirect('/')
+  })
+
+
 
 module.exports = router;

@@ -1,4 +1,8 @@
 const invModel = require("../models/inventory-model")
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
+
+
 
 const Util = {}
 
@@ -55,7 +59,6 @@ Util.buildClassificationGrid = async (data) => {
 
 Util.buildCarDetailsGrid = async (data) => {
     let grid
-    console.log(data)
     if (data.length > 0) {
         grid = '<div id="in-car-display">'
         data.forEach(vehicle => {
@@ -97,13 +100,79 @@ Util.buildClassificationList = async function (classification_id = null) {
     return classificationList
   }
 
+
 /* ****************************************
  * Middleware For Handling Errors
  * Wrap other function in this for 
  * General Error Handling
  **************************************** */
-
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
+
+/* ****************************************
+* Middleware to check token validity
+**************************************** */
+
+Util.checkJWTToken = (req, res, next) => {
+    if (req.cookies.jwt){
+        jwt.verify(
+            req.cookies.jwt,
+            process.env.ACCESS_TOKEN_SECRET,
+            (err, user) => {
+                if (err) {
+                    req.flash("error", "Your session has expired. Please log in again.")
+                    res.clearCookie("jwt")
+                    return res.redirect("/account/login")
+                } 
+                res.locals.user = user
+                res.locals.loggedin = 1
+                next() 
+            })
+    } else {
+        next()
+    }
+}
+
+Util.checkLogin = (req, res, next) => {
+    if (res.locals.loggedin) {
+        return next()
+    } else {
+        req.flash("error", "Please log in to access this page.")
+        return res.redirect("/account/login")
+    }
+}
+
+// Util.isUserLogin = (req, res, next) => {
+//     const token = req.cookies.jwt
+//   if (token) {
+//     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+//     res.locals.loggedIn = true
+//     res.locals.user = decoded
+//   } else {
+//     res.locals.loggedIn = false
+//   }
+//   next()
+// }
+
+Util.authoriseEmployeeOrAdmin = (req, res, next) => {
+    const token = req.cookies.jwt
+    if (!token) {
+        req.flash("error", "Unauthorised access")
+        return res.redirect("/account/login")
+    }
+    try {
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+        if (decoded.account_type === 'Employee' || decoded.account_type === 'Admin') {
+            res.locals.user = decoded
+            return next()
+        } else {
+            req.flash("error", "Unauthorised access")
+            return res.redirect("/account/")
+        }
+    } catch (error) {
+        req.flash("error", "Invalid token or token expired... please log in again")
+        return res.redirect("/account/login")
+    }
+}
 
 module.exports = Util
 

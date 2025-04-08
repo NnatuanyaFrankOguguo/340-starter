@@ -4,12 +4,12 @@
 
 
 <% if (messages && messages.success && messages.success.length) { %>
-    <div class="flash-message success"><%= messages.success %></div>
-  <% } %>
-  
-  <% if (messages && messages.error && messages.error.length) { %>
-    <div class="flash-message error"><%= messages.error %></div>
-  <% } %>
+  <div class="flash-message success"><%= messages.success %></div>
+<% } %>
+
+<% if (messages && messages.error && messages.error.length) { %>
+  <div class="flash-message error"><%= messages.error %></div>
+<% } %>
 
 <% if (errors) { %>
     <ul class="notice">
@@ -20,7 +20,7 @@
   <% } %>
 
 <div class="login-container">
-    <form action="" method="POST">
+    <form action="/account/login" method="POST">
         
         <label for="email">Email:</label>
         <input type="email" id="email" name="account_email" required>

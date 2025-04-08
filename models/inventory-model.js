@@ -44,7 +44,7 @@ const getCarsbyId = async(inv_id) => {
             WHERE i.inv_id = $1`,
             [inv_id]
         )
-        console.log("Query result:", data.rows); // ✅ Debugging log
+        
         return data.rows;
     } catch (error) {
         console.error('Error in getCarsbyId', error);    
@@ -61,7 +61,7 @@ const addClassification = async (classification_name) => {
     try {
         const sql = "INSERT INTO classification (classification_name) VALUES ($1) RETURNING *"
         const result = await pool.query(sql, [classification_name])
-        console.log("DB Insert Result:", result.rows); // Debugging log
+
 
         return result.rows[0]; // Return the newly created classification
     } catch (error) {
@@ -80,7 +80,6 @@ const addInventory = async (inv_make, inv_model, inv_year, inv_description, inv_
     try {
         const sql = "INSERT INTO inventory (inv_make, inv_model, inv_year, inv_description, inv_price, inv_miles, inv_color, inv_image, inv_thumbnail, classification_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *"
         const result = await pool.query(sql, [inv_make, inv_model, inv_year, inv_description, inv_price, inv_miles, inv_color, inv_image, inv_thumbnail, classification_id ])
-        console.log("DB Insert Result:", result.rows); // Debugging log
 
         return result.rows[0]; // Return the newly created inventory item
     } catch (error) {
@@ -89,6 +88,56 @@ const addInventory = async (inv_make, inv_model, inv_year, inv_description, inv_
 
 }
 
-module.exports = {getClassifications, getInventoryByClassificationId, getCarsbyId, addClassification, addInventory}
+/* ***************************
+ *  Update Inventory Data
+ * ************************** */
+async function updateInventory(
+    inv_id,
+    inv_make,
+    inv_model,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_year,
+    inv_miles,
+    inv_color,
+    classification_id
+  ) {
+    try {
+      const sql =
+        "UPDATE public.inventory SET inv_make = $1, inv_model = $2, inv_description = $3, inv_image = $4, inv_thumbnail = $5, inv_price = $6, inv_year = $7, inv_miles = $8, inv_color = $9, classification_id = $10 WHERE inv_id = $11 RETURNING *"
+      const data = await pool.query(sql, [
+        inv_make,
+        inv_model,
+        inv_description,
+        inv_image,
+        inv_thumbnail,
+        inv_price,
+        inv_year,
+        inv_miles,
+        inv_color,
+        classification_id,
+        inv_id
+      ])
+      return data.rows[0]
+    } catch (error) {
+      console.error("model error: " + error)
+    }
+  }
+
+const deleteInventoryById = async (inv_id) => {
+    try {
+        const sql = "DELETE FROM inventory WHERE inv_id = $1 RETURNING *"
+        const result = await pool.query(sql, [inv_id])
+        return result.rows[0]; // Return the whatever result in the deleted inventory item
+        console.log("results from the deleted query", result)
+    } catch (error) {
+        console.log("delete error", error)
+    }
+
+}
+
+module.exports = {getClassifications, getInventoryByClassificationId, getCarsbyId, addClassification, addInventory, updateInventory, deleteInventoryById}
 
 // this is where what will be queried from the database is defined and exported to the controller to be used in the view/ frontend
