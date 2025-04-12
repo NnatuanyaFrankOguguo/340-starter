@@ -59,12 +59,20 @@ const accountUpdate = async (account_id, account_email, account_firstname, accou
 const passwordUpdate = async (hashedPassword, account_id) => {
     try {
         const sql = "UPDATE public.account SET account_password = $1 WHERE account_id = $2 RETURNING *"
-        const data = await pool.query(sql, [hashedPassword, account_id])
-        console.log("this is the data gotten afert the update of user account", data)
-        return data.rows[0]
+        return await pool.query(sql, [hashedPassword, account_id])
     } catch (error) {
-        console.error("model error: " + error)
+        console.error("model error: ", error)
     }
 }
 
-module.exports = { registerAccount, getUserByEmail, getUserbyId, accountUpdate, passwordUpdate }
+const deleteAccount = async (account_id) => {
+    try {
+        const sql = "DELETE FROM public.account WHERE account_id = $1 RETURNING *"
+        return await pool.query(sql, [account_id])
+    } catch (error) {
+        console.error("model error: ", error)
+        return false
+    }
+}
+
+module.exports = { registerAccount, getUserByEmail, getUserbyId, accountUpdate, passwordUpdate, deleteAccount }

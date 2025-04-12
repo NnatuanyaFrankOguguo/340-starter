@@ -18,11 +18,13 @@ router.post('/login', regValidate.loginRules(), regValidate.checkLoginData, util
 
 router.post('/register', regValidate.registrationRules(), regValidate.checkRegData, utilities.handleErrors(acctController.registerAccount))
 
-router.get('/', utilities.checkLogin, utilities.handleErrors(acctController.buildAccountView));
+router.get('/', utilities.checkJWTToken, utilities.checkLogin, utilities.handleErrors(acctController.buildAccountView));
 
 router.post("/update", regValidate.editAcctRules(), regValidate.checkEditAcctData, utilities.handleErrors(acctController.updateAccount))
 
 router.post('/update-password', regValidate.checkPasswordRules(), regValidate.checkPasswordData, utilities.handleErrors(acctController.updatePassword))
+
+router.post('/delete', utilities.checkJWTToken, utilities.checkLogin, utilities.handleErrors(acctController.deleteAccount))
 
 router.get('/logout', (req, res) => {
     res.clearCookie('jwt')

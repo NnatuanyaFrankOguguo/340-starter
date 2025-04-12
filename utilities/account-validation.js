@@ -144,7 +144,7 @@ validate.editAcctRules = () => {
 }
 
 validate.checkEditAcctData = async (req, res, next) => {
-    const {account_firstname, account_lastname, account_email } = req.body
+    const {account_firstname, account_lastname, account_email, account_id, account_type } = req.body
     let errors = []
     errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -156,6 +156,8 @@ validate.checkEditAcctData = async (req, res, next) => {
             account_firstname,
             account_lastname,
             account_email,
+            account_type,
+            account_id 
         })
         return
     }
@@ -163,31 +165,29 @@ validate.checkEditAcctData = async (req, res, next) => {
 }
 
 validate.checkPasswordRules = () => {
-        return [    // password is required and must be strong password
-            body("account_password")
-            .trim()
-            .notEmpty()
-            .isStrongPassword({
-                minLength: 12,
-                minLowercase: 1,
-                minUppercase: 1,
-                minNumbers: 1,
-                minSymbols: 1,
-            })
-            .withMessage("Password does not meet requirements."),
-        ]
+    return [    
+        // password is required and must be strong password
+        body("account_password")
+        .trim()
+        .notEmpty()
+        .withMessage("Password is required.")
+        .isStrongPassword({
+            minLength: 12,
+            minLowercase: 1,
+            minUppercase: 1,
+            minNumbers: 1,
+            minSymbols: 1,
+        })
+        .withMessage("Password does not meet requirements."),
+    ]
 }
 
-validate.checkPasswordData = async (res, req, next) => {
-    let errors = []
-    errors = validationResult(req)
+validate.checkPasswordData = async (req, res, next) => {
+    const {account_id} = req.body
+    let errors = validationResult(req)
     if (!errors.isEmpty()) {
-        let nav = await utilities.getNav()
-        res.render("account/login", {
-            errors,
-            title: "Login",
-            nav,
-        })
+        req.flash("error", "Password validation failed. Please check the requirements.")
+        res.redirect(`/account/update/${account_id}`)
         return
     }
     next()

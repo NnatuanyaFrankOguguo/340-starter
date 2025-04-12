@@ -34,7 +34,7 @@ const processLogin = async (req, res, next) => {
     
     if (!user || !user.account_password) {
         req.flash("error", "Invalid email or password.")
-        res.redirect("account/login")
+        res.redirect("/account/login")
         return;
     }
     console.log("logged in user details", user)
@@ -51,19 +51,12 @@ const processLogin = async (req, res, next) => {
             }
 
             req.flash("success", `${user.account_firstname}, you are logged in successfully.`);
-            res.status(201).render("account/acct-management", {
-                title: "Account Management",
-                nav,
-                welcome: `Welcome ${user.account_firstname}`,
-                errors: null,
-                messages: req.flash(),
-                user
-            })
+            res.redirect("/account")
             return;
 
         } else {
             req.flash("error", "Invalid email or password.")
-            res.redirect("account/login")
+            res.redirect("/account/login")
         }
     } catch (error) {
         return new Error ("Access Forbidden")
@@ -124,14 +117,15 @@ const buildAccountView = async (req, res) => {
         nav,
         grid: null, // Pass the grid variable here if needed
         errors: null,
-        messages: req.flash()
+        messages: req.flash(),
+        welcome: `Welcome ${res.locals.user.account_firstname}`,
+        user: res.locals.user
     })
 }
 
 
 const buildUpdateAcctView = async (req, res) => {
     const account_id = parseInt(req.params.id)
-    console.log("fhdsifsjsd", req.params)
     console.log("ACCOUNT ID", account_id)
     let data = await acctModel.getUserbyId(account_id)
     let nav = await utilities.getNav()
@@ -190,9 +184,7 @@ const updatePassword = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(account_password, 10);
 
-    const result = await acctModel.passwordUpdate( hashedPassword, account_id)
-
-    //results gotten i would use to generate the whole edit-account view if it doesnt work..
+    const result = await acctModel.passwordUpdate(hashedPassword, account_id)
 
     if (result) {
         req.flash("success", `password successfully updated.`)
@@ -201,10 +193,21 @@ const updatePassword = async (req, res) => {
         req.flash('error', 'Password update failed.')
         res.redirect(`/account/update/${account_id}`)
     }
-
-
 }
 
+const deleteAccount = async (req, res) => {
+    const account_id = res.locals.user.account_id
+    
+    const result = await acctModel.deleteAccount(account_id)
+    
+    if (result) {
+        res.clearCookie('jwt')
+        req.flash("success", "Your account has been successfully deleted.")
+        res.redirect("/")
+    } else {
+        req.flash("error", "Failed to delete account. Please try again.")
+        res.redirect("/account")
+    }
+}
 
-
-module.exports = { buildLogin, buildRegister, registerAccount, processLogin, buildAccountView, buildUpdateAcctView, updateAccount, updatePassword }
+module.exports = { buildLogin, buildRegister, registerAccount, processLogin, buildAccountView, buildUpdateAcctView, updateAccount, updatePassword, deleteAccount }

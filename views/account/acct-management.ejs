@@ -1,34 +1,51 @@
 <% if (title) { %>
-    <h1><%= title %></h1>
+  <h1><%= title %></h1>
 <% } %>
 
 
 <% if (messages && messages.success && messages.success.length) { %>
-  <div class="flash-message success"><%= messages.success %></div>
+<div class="flash-message success"><%= messages.success %></div>
 <% } %>
 
 <% if (messages && messages.error && messages.error.length) { %>
-  <div class="flash-message error"><%= messages.error %></div>
+<div class="flash-message error"><%= messages.error %></div>
 <% } %>
 
 
 <% if (errors) { %>
-  <ul class="notice">
- <% errors.array().forEach(error => { %>
-   <li><%= error.msg %></li>
+<ul class="notice">
+<% errors.array().forEach(error => { %>
+ <li><%= error.msg %></li>
 <%  }) %>
- </ul>
+</ul>
 <% } %>
 
 
 <% if (welcome) { %>
-  <h3><%= welcome %></h3>
+<h3><%= welcome %></h3>
 <% } %>
 
 <p>You are Logged in</p>
 
 <% if (user.account_type === 'Employee' || user.account_type === 'Admin') { %>
-  <a href="/account/update/<%= user.account_id %>">Update Account Info</a>
+<a href="/account/update/<%= user.account_id %>">Update Account Info</a>
 <% } %>
+
+<button onclick="confirmDelete()" class="btn btn-danger">Delete Account</button>
+
+
+<form id="deleteForm" action="/account/delete" method="POST" style="display: none;">
+</form>
+
+
+<script>
+function confirmDelete() {
+    if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+        document.getElementById('deleteForm').submit();
+    }
+}
+</script>
+
+
 
 

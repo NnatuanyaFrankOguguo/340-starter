@@ -17,7 +17,7 @@ router.get('/trigger-error', (req, res, next) => {
 })
 
 // Task 1: Management View
-router.get('/', utilities.authoriseEmployeeOrAdmin, utilities.handleErrors(invController.managementView));
+router.get('/acct-management', utilities.authoriseEmployeeOrAdmin, utilities.handleErrors(invController.managementView));
 
 // Task 2: Add Classification
 router.get('/add-classification',  utilities.authoriseEmployeeOrAdmin, utilities.handleErrors(invController.getAddClassificationView));

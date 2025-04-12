@@ -111,7 +111,9 @@ Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)
 /* ****************************************
 * Middleware to check token validity
 **************************************** */
-
+//This middleware checks if the user is logged in by verifying the JWT token in the cookies
+//If the token is valid, it sets the user and loggedin properties in res.locals
+//First, the JWT token is checked and res.locals.loggedin is set properly
 Util.checkJWTToken = (req, res, next) => {
     if (req.cookies.jwt){
         jwt.verify(
@@ -132,6 +134,7 @@ Util.checkJWTToken = (req, res, next) => {
     }
 }
 
+//Then, the checkLogin middleware can properly verify the login status
 Util.checkLogin = (req, res, next) => {
     if (res.locals.loggedin) {
         return next()
@@ -141,17 +144,6 @@ Util.checkLogin = (req, res, next) => {
     }
 }
 
-// Util.isUserLogin = (req, res, next) => {
-//     const token = req.cookies.jwt
-//   if (token) {
-//     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
-//     res.locals.loggedIn = true
-//     res.locals.user = decoded
-//   } else {
-//     res.locals.loggedIn = false
-//   }
-//   next()
-// }
 
 Util.authoriseEmployeeOrAdmin = (req, res, next) => {
     const token = req.cookies.jwt
